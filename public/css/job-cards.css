@@ -1,0 +1,65 @@
+/* public/css/job-cards.css */
+
+.job-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.job-card {
+  flex: 1 1 calc(33.33% - 20px);
+  max-width: 300px;
+  background-color: var(--header-bg-color);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  transition: 0.2s;
+}
+
+@media screen and (max-width: 1212px) {
+  .job-card {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 930px) {
+  .job-card {
+    flex: 1 1 100%;
+  }
+}
+
+.job-card:hover {
+  transform: scale(1.02);
+}
+
+.job-card-title {
+  font-weight: 600;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.job-card-subtitle {
+  color: var(--subtitle-color);
+  font-size: 13px;
+  margin-top: 14px;
+  line-height: 1.6em;
+}
+
+.job-card-buttons {
+  margin-top: 20px;
+}
+
+.job-card-buttons .btn-message {
+  margin-left: 10px;
+  color: var(--btn-color);
+  background-color: var(--btn-bg-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.job-card-buttons .btn-message:hover {
+  background-color: var(--btn-hover-bg-color);
+}

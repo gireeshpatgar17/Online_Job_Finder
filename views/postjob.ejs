@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post a Job | TalentHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-blue: #3b82f6;
+      --primary-light: #93c5fd;
+      --primary-dark: #1e3a8a;
+      --secondary-blue: #2563eb;
+      --accent-blue: #60a5fa;
+      --light-bg: rgba(240, 249, 255, 0.8);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+      --glass-border: rgba(255, 255, 255, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f1f5f9;
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .post-job-container {
+      max-width: 750px;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-job-container h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--primary-dark);
+      font-size: 2rem;
+      font-weight: 700;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .post-job-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+      border-radius: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      font-size: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background-color: white;
+      color: var(--text-dark);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-light);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    textarea.form-control {
+      min-height: 180px;
+      resize: vertical;
+      padding: 1rem;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 2.6rem;
+      color: var(--primary-blue);
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+      color: white;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary-blue);
+      width: 100%;
+      margin-top: 1.5rem;
+      border: 1px solid var(--primary-blue);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .character-counter {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .post-job-container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="post-job-container">
+    <h2>Create New Job Posting</h2>
+    <form action="/post-job" method="POST">
+      <div class="form-group">
+        <label for="title">Job Title</label>
+        <i class="fas fa-heading input-icon"></i>
+        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Senior Frontend Developer" required>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Position Role</label>
+        <i class="fas fa-user-tie input-icon"></i>
+        <input type="text" id="role" name="role" class="form-control" placeholder="e.g. Software Engineer II" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Job Description</label>
+        <textarea id="description" name="description" class="form-control" placeholder="Describe the position, responsibilities, requirements, and benefits..." required></textarea>
+        <div class="character-counter"><span id="char-count">0</span>/2000 characters</div>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Employment Type</label>
+        <i class="fas fa-briefcase input-icon"></i>
+        <input type="text" id="type" name="type" class="form-control" placeholder="e.g. Full-time, Part-time, Contract" required>
+      </div>
+
+      <div class="form-group">
+        <label for="deadline">Application Deadline</label>
+        <i class="fas fa-calendar-day input-icon"></i>
+        <input type="date" id="deadline" name="deadline" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-paper-plane"></i> Publish Job
+      </button>
+
+      <a href="/recruiter-dashboard" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Return to Dashboard
+      </a>
+    </form>
+  </div>
+
+  <script>
+    // Character counter for description
+    const description = document.getElementById('description');
+    const charCount = document.getElementById('char-count');
+
+    description.addEventListener('input', () => {
+      const length = description.value.length;
+      charCount.textContent = length;
+
+      if (length > 1800) {
+        charCount.style.color = 'var(--error)';
+      } else {
+        charCount.style.color = 'var(--text-light)';
+      }
+    });
+
+    // Set minimum date to today for deadline
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('deadline').min = today;
+  </script>
+</body>
+
+</html>

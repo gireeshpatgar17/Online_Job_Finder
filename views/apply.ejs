@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application</title>
+  <script defer src="/functions.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<style>
+    /* Color Variables */
+    :root {
+  --body-bg-color: #e5ecef;
+  --theme-bg-color: #fafafb;
+  --body-font: "Poppins", sans-serif;
+  --body-color: #2f2f33;
+  --active-color: #0162ff;               /* Only for title & submit button */
+  --accent-light-color: #dce9f9;         /* New light accent for section edges */
+  --header-bg-color: #fff;
+  --search-border-color: #efefef;
+  --border-color: #d8d8d8;
+  --alert-bg-color: #e8f2ff;
+  --subtitle-color: #83838e;
+  --inactive-color: #f0f0f0;
+  --placeholder-color: #9b9ba5;
+  --button-color: #fff;
+}
+
+body {
+  font-family: var(--body-font);
+  background-color: var(--body-bg-color);
+  color: var(--body-color);
+  margin: 0;
+  padding: 0;
+}
+
+.application-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: var(--theme-bg-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(88, 99, 148, 0.17);
+}
+
+.form-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--active-color); /* keep this blue */
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-left: 5px solid var(--accent-light-color); /* soft light color */
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ddd;
+}
+
+.form-section h2 {
+  font-size: 20px;
+  color: var(--body-color); /* use normal dark text instead of blue */
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+input,
+select,
+textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--theme-bg-color);
+  transition: border-color 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--active-color);
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-btn {
+  background-color: var(--active-color); /* keep this blue */
+  color: var(--button-color);
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #004fcc;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Label Styling */
+input[placeholder]:not([type="file"])::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* Required fields indicator */
+input[required]::after,
+textarea[required]::after {
+  content: " *";
+  color: red;
+  font-size: 1.2em;
+}
+
+/* Optional fields indicator */
+input[placeholder*="(optional)"]::after,
+textarea[placeholder*="(optional)"]::after {
+  content: " (optional)";
+  color: var(--subtitle-color);
+  font-size: 1.1em;
+}
+.back-button {
+  background: transparent; /* Transparent background */
+  border: none;           /* No border */
+  color: #0066cc;         /* Blue text (adjust to match your theme) */
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;   /* Smooth hover effect */
+  display: inline-flex;
+  align-items: center;
+}
+
+.back-button:hover {
+  color: #004499;         /* Darker blue on hover */
+  transform: translateX(-3px); /* Slight left move on hover */
+}
+back-button:hover::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: #0066cc;
+  margin-top: 2px;
+}
+
+</style>
+<body>
+  <div class="application-container">
+   
+    <h1 class="form-title">Job Application Form</h1>
+<!--action="/apply" method="POST" -->
+    <form id="jobApplicationForm" enctype="multipart/form-data">
+      <!-- Section 1: Personal Information -->
+      <section class="form-section" id="personalInfo">
+        <h2><i class="fa-solid fa-id-card"></i> Personal Information</h2>
+        <div class="form-grid">
+          <input type="text" name="name" id="name" placeholder="* Full Name" required>
+          <input type="text" name="dob" id="dob" placeholder="* Date of Birth (dd-mm-yyyy)" required>
+          <input type="number" name="age" id="age" placeholder="* Age" disabled required>
+          <select name="gender" id="gender" required>
+            <option value="">* Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <input type="text" name="address" id="address" placeholder="Current Address (optional)">
+        </div>
+      </section>
+
+      <!-- Section 2: Contact Information -->
+      <section class="form-section" id="contactInfo">
+        <h2><i class="fa-solid fa-phone"></i> Contact Information</h2>
+        <div class="form-grid">
+          <input type="email" name="email" id="email" placeholder="* Email Address" required>
+          <input type="tel" name="phone" id="phone" placeholder="* Phone Number" required>
+        </div>
+      </section>
+
+      <!-- Section 3: Educational Background -->
+      <section class="form-section" id="educationBackground">
+        <h2><i class="fa-solid fa-graduation-cap"></i> Educational Background</h2>
+        <div class="form-grid">
+          <input type="text" name="degree" id="degree" placeholder="* Highest Qualification Degree" required>
+          <input type="text" name="specialization" id="specialization" placeholder="* Specialization (e.g., Computer Science)" required>
+          <input type="text" name="university" id="university" placeholder="* University / Institution" required>
+          <input type="number" name="gradYear" id="gradYear" placeholder="* Year of Graduation (YYYY)" required pattern="\d{4}" maxlength="4">
+          <input type="text" name="percentage" id="percentage" placeholder="Percentage / CGPA (optional)">
+        </div>
+      </section>
+
+      <!-- Section 4: Work Experience -->
+      <section class="form-section" id="workExperience">
+        <h2><i class="fa-solid fa-briefcase"></i> Work Experience (optional)</h2>
+        <div class="form-grid">
+          <input type="number" name="experienceYears" id="experienceYears" placeholder="Total Years of Experience">
+          <input type="text" name="previousRole" id="previousRole" placeholder="Previous Job Role / Title">
+          <input type="text" name="companyName" id="companyName" placeholder="Previous Company Name">
+          <input type="text" name="jobDuration" id="jobDuration" placeholder="Duration (From – To)" style="min-width: 150px;">
+          <textarea name="keyResponsibilities" id="keyResponsibilities" placeholder="Key Responsibilities / Projects" style="min-height: 60px; max-height: 150px; overflow-y: auto;"></textarea>
+        </div>
+      </section>
+
+
+      <!-- Section 5: Skills and Certifications -->
+      <section class="form-section" id="skillsCertifications">
+        <h2><i class="fa-solid fa-laptop-code"></i> Skills & Certifications</h2>
+        <div class="form-grid">
+          <input type="text" name="skills" id="skills" placeholder="* Skills & Expertise" required>
+          <input type="file" name="certificates" id="certificates" name="certificates" multiple>
+        </div>
+      </section>
+
+      <!-- Section 6: Portfolio Links -->
+      <section class="form-section" id="portfolioLinks">
+        <h2><i class="fa-solid fa-link"></i> Portfolio Links</h2>
+        <div class="form-grid">
+          <input type="url" name="github" id="github" placeholder="GitHub/LinkedIn (optional)">
+          <input type="url" name="personalWebsite" id="personalWebsite" placeholder="Personal Website (optional)">
+        </div>
+      </section>
+
+      <!-- Section 7: Upload Resume -->
+      <section class="form-section" id="resumeUpload">
+        <h2><i class="fa-solid fa-file-upload"></i> Upload Resume</h2>
+        <div class="form-grid">
+          <input type="file" name="resume" id="resume" required>
+        </div>
+      </section>
+
+      <!-- Section 8: Submit Button -->
+      <section class="form-section">
+        <button class="submit-btn" type="submit" onclick="submitForm()">
+          <i class="fa-solid fa-paper-plane"></i> Submit Application
+        </button>
+      </section>
+
+      <!-- Success Section -->
+      <section class="form-section hidden" id="successMessage">
+        <h2><i class="fa-solid fa-check-circle"></i> Application Submitted Successfully!</h2>
+        <p>Thank you for applying. We'll get back to you soon.</p>
+      </section>
+      <button onclick="window.location.href='/'" class="back-button">
+        ← Back to Jobs
+      </button>
+    </form>
+  </div>
+  <script defer src="/functions.js"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>My Page</title>
+	<link rel="stylesheet" href="re-style.css"> <!-- OR use a <style> tag -->
+</head>
+
+<body>
+	<div class="dashboard">
+		<!-- Sidebar Navigation -->
+		<nav class="sidebar">
+			<div class="logo">
+				<h2>Recruiter Flow</h2>
+			</div>
+			<ul class="nav-links">
+				<li class="active"><a href="#overview"><i class="icon-dashboard"></i>Overview</a></li>
+				<!-- <li><a href="#demographics"><i class="icon-users"></i>Applications</a></li> -->
+				<li><a href="#messages"><i class="icon-chart"></i>Messages</a></li>
+				<li><a href="/post-job"><i class="icon-building"></i> Post Job</a></li>
+			</ul>
+			<div class="user-profile">
+				<img src="https://picsum.photos/40/40" alt="User Profile" class="avatar">
+				<% if (user) { %>
+					<div class="user-info">
+						<h4>
+							<%= user.name %>
+						</h4>
+						<p>
+							<%= user.company || 'Recruiter' %>
+						</p>
+					</div>
+					<% } %>
+			</div>
+			<a href="/logout" class="logout-btn">Logout</a>
+
+		</nav>
+
+		<!-- Main Content Area -->
+		<main class="content">
+			<header class="top-bar">
+				<div class="top-bar-actions">
+					<button class="notification-btn"><i class="icon-bell"></i></button>
+					<button class="export-btn">Export Data</button>
+				</div>
+			</header>
+
+			<!-- Dashboard Content -->
+			<div class="dashboard-content">
+				<section id="overview" class="section-header">
+					<h1>Overview</h1>
+				</section>
+
+				<!-- Messages Section -->
+				<section id="messages" class="messages-section">
+					<h2>Received Messages</h2>
+
+					<% if (messages && messages.length> 0) { %>
+						<div class="message-list">
+							<% messages.forEach(message=> { %>
+								<div class="message-card <%= message.status || 'unread' %>"
+									data-message-id="<%= message._id %>">
+									<div class="message-header">
+										<h3>
+											<% if (message.job && message.job.title) { %>
+												Regarding: <a href="/jobs/<%= message.job._id %>" class="job-link">
+													<%= message.job.title %>
+												</a>
+												<% } else { %>
+													General Inquiry
+													<% } %>
+										</h3>
+										<div class="message-meta">
+											<span class="message-date">
+												<%= message.createdAt.toLocaleDateString() %>
+											</span>
+											<span class="message-status">
+												<%= message.status || 'unread' %>
+											</span>
+										</div>
+										<div class="message-sender">
+											From: <strong>
+												<%= message.sender.name %>
+											</strong>
+											(<%= message.sender.email %>)
+										</div>
+									</div>
+
+									<div class="message-content">
+										<p>
+											<%= message.message %>
+										</p>
+									</div>
+
+									<div class="message-actions">
+										<button class="reply-btn" data-email="<%= message.sender.email %>">
+											↩️ Reply
+										</button>
+
+										<button class="ignore-btn" data-message-id="<%= message._id %>">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
+												viewBox="0 0 24 24" style="margin-right:6px;">
+												<path
+													d="M18.364 5.636l-1.414-1.414L12 9.172 7.05 4.222 5.636 5.636 10.586 10.586 5.636 15.536l1.414 1.414L12 12.828l4.95 4.95 1.414-1.414-4.95-4.95z" />
+											</svg>
+											Ignore
+										</button>
+
+									</div>
+								</div>
+								<% }); %>
+						</div>
+						<% } else { %>
+							<div class="no-messages">
+								<i class="icon-envelope"></i>
+								<p>No messages received yet</p>
+							</div>
+							<% } %>
+				</section>
+			</div>
+		</main>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			// Reply button handler
+			document.querySelectorAll('.reply-btn').forEach(btn => {
+				btn.addEventListener('click', (e) => {
+					e.stopPropagation();
+					const email = btn.dataset.email;
+					window.location.href = `mailto:${email}`;
+				});
+			});
+
+			// Mark as read on click
+			document.querySelectorAll('.message-card.unread').forEach(card => {
+				card.addEventListener('click', function () {
+					const messageId = this.dataset.messageId;
+					if (messageId) {
+						fetch(`/messages/${messageId}/read`, { method: 'PUT' })
+							.then(() => this.classList.replace('unread', 'read'))
+							.catch(err => console.error('Error marking as read:', err));
+					}
+				});
+			});
+		});
+	</script>
+
+
+
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			const ignoreButtons = document.querySelectorAll(".ignore-btn");
+
+			ignoreButtons.forEach(button => {
+				button.addEventListener("click", async () => {
+					const messageId = button.getAttribute("data-message-id");
+
+					try {
+						const response = await fetch(`/messages/${messageId}`, {
+							method: "DELETE",
+						});
+
+						if (response.ok) {
+							// Remove the message card from the DOM
+							const messageCard = button.closest(".message-card");
+							messageCard.remove();
+							alert("Message ignored successfully.");
+						} else {
+							alert("Failed to ignore the message. Please try again.");
+						}
+					} catch (error) {
+						console.error("Error ignoring message:", error);
+						alert("Error ignoring the message. Please try again later.");
+					}
+				});
+			});
+		});
+	</script>
+
+
+
+	<style>
+		.message-card {
+			cursor: pointer;
+			transition: background-color 0.2s, transform 0.2s;
+			padding: 10px 15px;
+			border-radius: 6px;
+			background: #ffffff;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+			border-left: 4px solid #4a6bff;
+			overflow: hidden;
+			position: relative;
+			animation: fadeIn 0.3s ease-out forwards;
+		}
+
+		.message-card.unread {
+			background-color: #f8f9fa;
+		}
+
+		.message-card:hover {
+			background-color: #f1f1f1;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		.message-actions {
+			display: flex;
+			gap: 8px;
+			margin-top: 10px;
+		}
+
+		.reply-btn {
+			background: linear-gradient(135deg, #4a6bff, #657eff);
+			color: #ffffff;
+			padding: 6px 18px;
+			border: none;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 0.85rem;
+			font-weight: 500;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.reply-btn:hover {
+			background: linear-gradient(135deg, #3b5dcc, #5c6fee);
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+			transform: translateY(-2px);
+		}
+
+		.messages-section {
+			margin-top: 15px;
+			padding: 15px;
+			background: #f8f9fa;
+			border-radius: 8px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+		}
+
+		.message-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 5px;
+		}
+
+		.message-header h3 {
+			color: #2c3e50;
+			font-size: 0.9rem;
+			margin: 0;
+			font-weight: 600;
+		}
+
+		.message-date {
+			color: #7f8c8d;
+			font-size: 0.75rem;
+			background: #f1f5fe;
+			padding: 3px 8px;
+			border-radius: 15px;
+		}
+
+		.message-sender {
+			color: #4a6bff;
+			margin-bottom: 5px;
+			font-weight: 500;
+			font-size: 0.85rem;
+		}
+
+		.message-content {
+			white-space: pre-wrap;
+			color: #34495e;
+			line-height: 1.4;
+			padding: 8px 12px;
+			background: #f9fafc;
+			border-radius: 5px;
+			font-size: 0.85rem;
+		}
+
+		.no-messages {
+			text-align: center;
+			padding: 20px;
+			color: #7f8c8d;
+			font-size: 0.9rem;
+			background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="%23dfe6e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>') no-repeat center 15px;
+			padding-top: 50px;
+			opacity: 0.8;
+		}
+
+		@media (max-width: 768px) {
+			.message-header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 5px;
+			}
+
+			.message-date {
+				align-self: flex-start;
+			}
+
+			.message-card {
+				padding: 12px 10px;
+			}
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(5px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.ignore-btn {
+			background: linear-gradient(135deg, #ff5c5c, #ff7979);
+			color: #ffffff;
+			padding: 6px 18px;
+			border: none;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 0.85rem;
+			font-weight: 500;
+			box-shadow: 0 4px 12px rgba(255, 92, 92, 0.4);
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.ignore-btn:hover {
+			background: linear-gradient(135deg, #cc4949, #d96666);
+			box-shadow: 0 6px 18px rgba(204, 73, 73, 0.6);
+			transform: translateY(-2px);
+		}
+
+		.user-profile {
+			text-align: center;
+			padding-bottom: 20px;
+			/* smaller space for logout button */
+			position: relative;
+		}
+
+		.logout-btn {
+			background: linear-gradient(135deg, #4a6bff, #657eff);
+			color: #ffffff;
+			padding: 6px 18px;
+			border: none;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 0.85rem;
+			font-weight: 500;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+			display: inline-block;
+			margin-top: 8px;
+			/* reduced from 10px */
+			width: 80%;
+			/* button width relative to sidebar */
+			max-width: 150px;
+			/* max size */
+		}
+
+
+		.logout-btn:hover {
+			background: linear-gradient(135deg, #3b5dcc, #5c6fee);
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+			transform: translateY(-2px);
+		}
+	</style>
+
+
+</body>
+
+</html>

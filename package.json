@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.13.2",
+    "multer": "^1.4.5-lts.2",
+    "sharp": "^0.34.1"
+  },
+  "name": "onlinejobfinder",
+  "version": "1.0.0",
+  "description": "This project is a simple template engine application using **Express.js** as the backend and **EJS** as the templating engine.",
+  "main": "script.js",
+  "scripts": {
+    "start": "node script.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarshanK2424/OnlineJobFinder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DarshanK2424/OnlineJobFinder/issues"
+  },
+  "homepage": "https://github.com/DarshanK2424/OnlineJobFinder#readme"
+}
