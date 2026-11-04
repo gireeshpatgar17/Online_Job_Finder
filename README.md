@@ -1,89 +1,62 @@
-# Online-JOB-UPDATED
+# Online Job Finder
 
-This is a collaborative full-stack web app built using Node.js, MongoDB, and EJS.
+**A server-rendered job board for applicants and recruiters.**
 
-## 🚀 How to Run
+## Overview
 
-1. **Install Dependencies**
-   - In your terminal, run:
-     ```bash
-     npm install express
-     ```
+This Express application uses EJS views and MongoDB to display job listings, accept applications, and support recruiter job posting. It includes account registration and session-based login with applicant and recruiter roles.
 
-2. **Start the Server**
-   - After installing dependencies, run the following command to start the server:
-     ```bash
-     node server.js
-     ```
+## Key features
 
-3. **Access the Application**
-   - Open your browser and visit the following pages:
-     - **Home Page**: [http://localhost:4000](http://localhost:4000)
-     - **Login Page**: [http://localhost:4000/login](http://localhost:4000/login)
-     - **Sign-Up Page**: [http://localhost:4000/signup](http://localhost:4000/signup)
+- Browse job posts and view job details.
+- Register and log in as an applicant or recruiter.
+- Submit an application with a resume and certificate uploads.
+- Post jobs from the recruiter flow.
+- Send job-related messages through the contact form.
 
----
+## Tech stack
 
-## 🛠 Project Structure
+Node.js, Express, EJS, MongoDB, Mongoose, express-session, Multer, and Sharp.
 
-### 1. **Backend: `server.js`**
-   - This file contains the server-side logic using **Express.js**.
-   - It handles routing and renders views using **EJS**.
+## Architecture and workflow
 
-### 2. **Frontend: `views/` Directory**
-   - This folder contains the front-end files (EJS templates):
-     - **`index.ejs`**: The home page, with HTML and CSS.
-     - **`contact.ejs`**: The contact page, with HTML and CSS.
-     - **`login.ejs`**: The login page for both recruiters and applicants.
-     - **`signup.ejs`**: The sign-up page for both recruiters and applicants.
-
----
-
-## 📦 Dependencies
-- **Express.js**
-- **EJS**
-- **MongoDB**
-
----
-
-Feel free to modify the file structure or add more sections as necessary.
-
+```mermaid
+flowchart LR
+    B[Browser] --> V[Express routes and EJS views]
+    V --> M[Mongoose models]
+    M --> D[(MongoDB)]
+    B --> U[Application upload form]
+    U --> F[Multer file storage]
+    F --> P[public/uploads]
+    V --> B
 ```
-Online-JOB-UPDATED
-├─ loginpage
-├─ models
-│  ├─ application.js
-│  ├─ contact.js
-│  ├─ jobpost.js
-│  ├─ recruiters.js
-│  └─ script.js
-├─ package-lock.json
-├─ package.json
-├─ public
-│  ├─ functions.js
-│  ├─ images
-│  │  ├─ cv.png
-│  │  ├─ icons
-│  │  │  ├─ resized-job-offer.png
-│  │  │  ├─ resized-posting.png
-│  │  │  ├─ resized-promotion.png
-│  │  │  └─ resized-search.png
-│  │  ├─ job-offer.png
-│  │  ├─ posting.png
-│  │  ├─ promotion.png
-│  │  └─ search.png
-│  ├─ re-style.css
-│  └─ style.css
-├─ README.md
-├─ routes
-│  └─ index.js
-└─ views
-   ├─ apply.ejs
-   ├─ contact.ejs
-   ├─ index.ejs
-   ├─ login.ejs
-   ├─ postjob.ejs
-   ├─ recruiter-dashboard.ejs
-   └─ signup.ejs
 
+## Project structure
+
+```text
+.
+├── routes/index.js       # Express routes and server listener
+├── models/               # Users, jobs, applications, and contacts
+├── views/                # EJS pages
+├── public/               # Styles, images, scripts, and uploads
+└── package.json
 ```
+
+## Installation and execution
+
+Requires Node.js, npm, and MongoDB running locally. The current connection in `models/script.js` targets `mongodb://127.0.0.1:27017/LoginDB`.
+
+```bash
+npm install
+node routes/index.js
+```
+
+Then open [http://localhost:4000](http://localhost:4000). The package currently does not define a working start script.
+
+## Screenshots and demo
+
+No screenshots or deployed demo link are included.
+
+## Author
+
+**Gireesh Sadanand Patgar** · [GitHub](https://github.com/gireeshpatgar17)
