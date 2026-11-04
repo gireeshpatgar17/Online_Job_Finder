@@ -51,7 +51,7 @@ npm install
 node routes/index.js
 ```
 
-Then open [http://localhost:4000](http://localhost:4000). The package currently does not define a working start script.
+Then open [http://localhost:4000](http://localhost:4000).
 
 ## Screenshots and demo
 
