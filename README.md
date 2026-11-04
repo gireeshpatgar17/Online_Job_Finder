@@ -53,10 +53,6 @@ node routes/index.js
 
 Then open [http://localhost:4000](http://localhost:4000).
 
-## Screenshots and demo
-
-No screenshots or deployed demo link are included.
-
 ## Author
 
 **Gireesh Sadanand Patgar** · [GitHub](https://github.com/gireeshpatgar17)
