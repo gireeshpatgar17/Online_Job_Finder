@@ -1,3 +1,4 @@
+// Purpose: Add browser-side behavior to the application form, including calculating age from date of birth.
 document.addEventListener('DOMContentLoaded', () => {
   const dobInput = document.getElementById('dob');
   const ageInput = document.getElementById('age');

@@ -1,3 +1,4 @@
+// Purpose: Accept job-specific applicant questions and route each message to the owning recruiter.
 const express = require('express');
 const mongoose = require('mongoose');
 const Job = require('../models/jobpost');

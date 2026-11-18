@@ -1,3 +1,4 @@
+// Purpose: Search active job listings, calculate database-backed filter counts, sort results, and paginate them.
 const express = require('express');
 const Job = require('../models/jobpost');
 const router = express.Router();

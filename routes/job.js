@@ -1,3 +1,4 @@
+// Purpose: Validate recruiter job posts, create/edit owned listings, and render job details.
 const express = require('express');
 const path = require('path');
 const fs = require('fs');

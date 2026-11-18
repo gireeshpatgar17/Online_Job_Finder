@@ -1,3 +1,4 @@
+// Purpose: Connect Mongoose to the MongoDB URI configured for this environment.
 const mongoose = require('mongoose');
 
 async function connectDB() {

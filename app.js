@@ -1,3 +1,4 @@
+// Purpose: Configure the Express application and start it after MongoDB connects and sample jobs are seeded.
 const express = require('express');
 const path = require('path');
 const session = require('express-session');

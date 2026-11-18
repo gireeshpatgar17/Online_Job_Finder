@@ -1,3 +1,4 @@
+// Purpose: Serve and submit applications, prevent duplicate submissions, track applicant records, and protect recruiter file downloads.
 const express = require('express');
 const multer = require('multer');
 const path = require('path');

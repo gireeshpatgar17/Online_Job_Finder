@@ -1,3 +1,4 @@
+// Purpose: Define job-specific messages sent to recruiters and their read status.
 const mongoose = require('mongoose');
 
 const contactSchema = new mongoose.Schema({

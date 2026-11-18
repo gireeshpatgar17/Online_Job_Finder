@@ -1,3 +1,4 @@
+# Purpose: Keep local dependencies, secrets, generated logs, and private applicant uploads out of Git.
 node_modules/
 .env
 storage/uploads/*

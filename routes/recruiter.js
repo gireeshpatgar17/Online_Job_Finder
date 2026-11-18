@@ -1,3 +1,4 @@
+// Purpose: Render recruiter-owned work and handle job, application-status, attachment, and message actions.
 const express = require('express');
 const Contact = require('../models/contact');
 const Job = require('../models/jobpost');

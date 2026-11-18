@@ -1,3 +1,4 @@
+// Purpose: Require an active login session and, when requested, a matching account role.
 function requireRole(role) {
   return (req, res, next) => {
     if (!req.session.user) return res.redirect(`/login?redirect=${encodeURIComponent(req.originalUrl)}`);

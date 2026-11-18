@@ -1,3 +1,4 @@
+// Purpose: Define applicant and recruiter accounts, company details, and unique usernames.
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({

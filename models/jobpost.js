@@ -1,3 +1,4 @@
+// Purpose: Define job listing fields, recruiter ownership, salary, deadlines, visibility, and sample-data keys.
 const mongoose = require('mongoose');
 
 const jobPostSchema = new mongoose.Schema({

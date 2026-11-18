@@ -1,3 +1,4 @@
+// Purpose: Define application form data, submission timestamps, current status, and duplicate-application protection.
 const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({

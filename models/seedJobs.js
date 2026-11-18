@@ -1,3 +1,4 @@
+// Purpose: Seed one system sample recruiter and 20 complete job listings without creating restart duplicates.
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const User = require('./user');
