@@ -1,0 +1,224 @@
+<!-- Purpose: Render account registration for applicants and recruiters. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up | Online Job Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #0056b3;
+      --background-color: #f5f9ff;
+      --text-color: #333;
+      --input-bg: #fff;
+      --error-bg: #ffe6e6;
+      --success-bg: #e8f8f0;
+      --error-color: #e60000;
+      --success-color: #27ae60;
+      --border-color: #ccc;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.pexels.com/photos/4065876/pexels-photo-4065876.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1https://images.pexels.com/photos/4065876/pexels-photo-4065876.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background-color: rgba(255, 255, 255, 0.3);
+      /*backdrop-filter: blur(6px); */
+      padding: 40px 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      color: rgba(0, 0, 0, 0.75);
+    }
+
+    .auth-title {
+      text-align: center;
+      font-size: 28px;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .auth-form input, .auth-form select {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .auth-form input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .auth-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .auth-btn:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .auth-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+
+    .error-message, .success-message {
+      font-size: 14px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .error-message {
+      background-color: var(--error-bg);
+      color: var(--error-color);
+    }
+
+    .success-message {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .error-icon, .success-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-container">
+    <h1 class="auth-title">Create Account</h1>
+
+    <% if (success) { %>
+      <div class="success-message">
+        <svg class="success-icon" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12l1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <%= success %>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="error-message shake">
+        <svg class="error-icon" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/>
+        </svg>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <form class="auth-form" action="/signup" method="POST" onsubmit="return validatePassword()">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" id="password" placeholder="Password" required>
+      <select name="role" id="role" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="applicant">Job Seeker (Applicant)</option>
+        <option value="recruiter">Recruiter</option>
+      </select>
+      <input type="text" name="company" placeholder="Company Name (for Recruiters)" style="display: none;" id="company" disabled>
+
+      <button type="submit" class="auth-btn">Sign Up</button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account? <a href="/login" class="auth-link">Log In</a>
+    </p>
+  </div>
+
+  <script>
+  function validatePassword() {
+  const password = document.getElementById("password").value;
+
+  const checks = [
+    /[A-Z]/.test(password),   // Uppercase
+    /[a-z]/.test(password),   // Lowercase
+    /\d/.test(password),      // Digit
+    /[@$!%*?&]/.test(password) // Special character
+  ];
+
+  const passedChecks = checks.filter(Boolean).length;
+
+  if (password.length < 8 || passedChecks < 3) {
+    alert("Password must be at least 8 characters and include at least 3 of: uppercase, lowercase, number, special character.");
+    return false;
+  }
+
+  return true;
+}
+
+
+    const role = document.getElementById("role");
+    const companyInput = document.getElementById("company");
+
+    role.addEventListener("change", () => {
+      if (role.value === "recruiter") {
+        companyInput.style.display = "block";
+        companyInput.disabled = false;
+        companyInput.required = true;
+      } else {
+        companyInput.style.display = "none";
+        companyInput.disabled = true;
+        companyInput.required = false;
+        companyInput.value = "";
+      }
+    });
+    role.dispatchEvent(new Event('change'));
+  </script>
+</body>
+</html>
