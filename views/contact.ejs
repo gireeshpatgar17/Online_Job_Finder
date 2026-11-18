@@ -1,0 +1,362 @@
+<!-- Purpose: Render the contact form for sending a message about a specific job listing. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Poppins", sans-serif;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        :root {
+            --primary-color: #ff3c78;
+            --light-black: rgba(0, 0, 0, 0.89);
+            --black: #000;
+            --white: #fff;
+            --grey: #aaa;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+        }
+
+        .contact {
+            margin-top: 45px;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form {
+            display: flex;
+            justify-content: space-between;
+            margin: 80px 0;
+        }
+
+        .form .form-txt {
+            flex-basis: 48%;
+        }
+
+        .form .form-txt h1 {
+            font-weight: 600;
+            color: var(--black);
+            font-size: 40px;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            color: var(--light-black);
+        }
+
+        .form .form-txt span {
+            color: var(--light-black);
+            font-size: 14px;
+        }
+
+        .form .form-txt h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 15px 0;
+            color: var(--light-black);
+        }
+
+        .form .form-txt p {
+            color: var(--light-black);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form .form-details {
+            flex-basis: 48%;
+        }
+
+        .form .form-details input[type="text"],
+        .form .form-details input[type="email"] {
+            padding: 15px 20px;
+            color: var(--black);
+            outline: none;
+            border: 1px solid var(--grey);
+            margin: 10px 0;
+            font-size: 14px;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .form .form-details textarea {
+            padding: 15px 20px;
+            margin: 10px 0;
+            color: var(--black);
+            outline: none;
+            border: 1px solid var(--grey);
+            font-size: 14px;
+            resize: none;
+            width: 100%;
+            border-radius: 5px;
+            height: 150px;
+        }
+
+        .form .form-details button {
+            padding: 15px 25px;
+            color: var(--white);
+            font-weight: 500;
+            background: var(--black);
+            outline: none;
+            border: none;
+            margin: 15px 0;
+            font-size: 14px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .form .form-details button:hover {
+            background: #333;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            text-decoration: none;
+            background-color: var(--black);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-family: "Poppins", sans-serif;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.85);
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background-color: #dff0d8;
+            color: var(--success-color);
+            border: 1px solid #d6e9c6;
+        }
+
+        .alert-error {
+            background-color: #f2dede;
+            color: var(--error-color);
+            border: 1px solid #ebccd1;
+        }
+
+        @media (max-width: 768px) {
+            .form {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form .form-txt,
+            .form .form-details {
+                flex-basis: 100%;
+            }
+
+            .form .form-details button {
+                margin-left: 0;
+            }
+
+            .form .form-details input[type="text"],
+            .form .form-details input[type="email"],
+            .form .form-details textarea {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .contact {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contact container">
+        <a href="/" class="back-button">← Back</a>
+        <% if (user) { %><a href="/logout" style="float:right">Log out</a><% } %>
+
+        <% if (success) { %>
+            <div class="alert alert-success">
+                <span>
+                    <%= success %>
+                </span>
+
+            </div>
+            <% } %>
+
+                <% if (error) { %>
+                    <div class="alert alert-error">
+                        <span>
+                            <%= error %>
+                        </span>
+                        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                    <% } %>
+
+
+                        <form action="/contact/<%= job._id %>" method="POST">
+                            <input type="hidden" name="jobId" value="<%= job._id %>">
+
+                            <% if (locals.user) { %>
+                                <input type="hidden" name="userId" value="<%= locals.user._id %>">
+                                <% } %>
+
+                                    <div class="form">
+                                        <div class="form-txt">
+                                            <h1>Ask About This Job</h1>
+                                            <span>Have questions about the "<strong>
+                                                    <%= job.title %>
+                                                </strong>" position?</span>
+
+                                            <% if (locals.user) { %>
+                                                <div class="user-info">
+                                                    <p>You're logged in as: <strong>
+                                                            <%= locals.user.name %>
+                                                        </strong></p>
+                                                </div>
+                                                <% } %>
+                                        </div>
+
+                                        <div class="form-details">
+                                            <!-- Always show these fields for ALL users -->
+                                            <div class="form-group">
+                                                <label for="name">Your Name</label>
+                                                <input type="text" name="name" id="name"
+                                                    value="<%= locals.user ? locals.user.name : '' %>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email">Your Email</label>
+                                                <input type="email" name="email" id="email"
+                                                    value="<%= locals.user ? locals.user.email : '' %>" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="message">Your Message</label>
+                                                <textarea name="message" id="message" required></textarea>
+                                            </div>
+
+                                            <% if (locals.user) { %>
+                                                <input type="hidden" name="userId" value="<%= locals.user._id %>">
+                                                <% } %>
+
+                                                    <button type="submit">SEND MESSAGE</button>
+                                        </div>
+
+                                        <style>
+                                            /* Add these styles to maintain your original look */
+                                            .contact-form .input-group {
+                                                margin-bottom: 20px;
+                                            }
+
+                                            .contact-form input,
+                                            .contact-form textarea {
+                                                width: 100%;
+                                                padding: 12px;
+                                                border: 1px solid #ddd;
+                                                border-radius: 4px;
+                                                font-size: 16px;
+                                            }
+
+                                            .contact-form textarea {
+                                                height: 150px;
+                                                resize: vertical;
+                                            }
+
+                                            .submit-btn {
+                                                background-color: #4CAF50;
+                                                color: white;
+                                                padding: 12px 20px;
+                                                border: none;
+                                                border-radius: 4px;
+                                                cursor: pointer;
+                                                font-size: 16px;
+                                                width: 100%;
+                                            }
+
+                                            .submit-btn:hover {
+                                                background-color: #45a049;
+                                            }
+
+                                            .user-info {
+                                                margin: 15px 0;
+                                                padding: 10px;
+                                                background: #f5f5f5;
+                                                border-radius: 4px;
+                                            }
+
+                                            .alert-success {
+                                                background-color: rgba(144, 238, 144, 0.25);
+                                                /* very light green with transparency */
+                                                color: #2e7d32;
+                                                /* medium-dark green text */
+                                                border: none;
+                                                /* remove border for clean look */
+                                                box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
+                                                /* subtle green shadow */
+                                                position: relative;
+                                                padding: 15px 40px 15px 15px;
+                                                border-radius: 6px;
+                                                font-weight: 600;
+                                                max-width: 600px;
+                                                margin: 10px auto;
+                                                text-align: center;
+                                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                            }
+
+                                            .close-btn {
+                                                cursor: pointer;
+                                                position: absolute;
+                                                top: 50%;
+                                                right: 12px;
+                                                transform: translateY(-50%);
+                                                font-weight: bold;
+                                                font-size: 22px;
+                                                color: #2e7d32;
+                                                /* same green as text */
+                                                opacity: 0.7;
+                                                transition: opacity 0.3s ease;
+                                            }
+
+                                            .close-btn:hover {
+                                                opacity: 1;
+                                            }
+                                        </style>
+
+
+
+
+</body>
