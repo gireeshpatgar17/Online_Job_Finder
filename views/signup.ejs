@@ -170,7 +170,7 @@
         <option value="applicant">Job Seeker (Applicant)</option>
         <option value="recruiter">Recruiter</option>
       </select>
-      <input type="text" name="company" placeholder="Company Name (for Recruiters)" style="display: none;" id="company">
+      <input type="text" name="company" placeholder="Company Name (for Recruiters)" style="display: none;" id="company" disabled>
 
       <button type="submit" class="auth-btn">Sign Up</button>
     </form>
@@ -208,11 +208,16 @@
     role.addEventListener("change", () => {
       if (role.value === "recruiter") {
         companyInput.style.display = "block";
+        companyInput.disabled = false;
+        companyInput.required = true;
       } else {
         companyInput.style.display = "none";
+        companyInput.disabled = true;
+        companyInput.required = false;
         companyInput.value = "";
       }
     });
+    role.dispatchEvent(new Event('change'));
   </script>
 </body>
 </html>

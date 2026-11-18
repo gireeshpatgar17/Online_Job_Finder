@@ -187,40 +187,65 @@
 
 <body>
   <div class="post-job-container">
-    <h2>Create New Job Posting</h2>
-    <form action="/post-job" method="POST">
+    <h2><%= job ? 'Edit Job Posting' : 'Create New Job Posting' %></h2>
+    <% if (typeof error !== 'undefined' && error) { %><p role="alert" style="color:#b00020"><%= error %></p><% } %>
+    <form action="<%= formAction || '/post-job' %>" method="POST">
       <div class="form-group">
         <label for="title">Job Title</label>
         <i class="fas fa-heading input-icon"></i>
-        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Senior Frontend Developer" required>
+        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Senior Frontend Developer" value="<%= job ? job.title : '' %>" required>
       </div>
 
       <div class="form-group">
         <label for="role">Position Role</label>
         <i class="fas fa-user-tie input-icon"></i>
-        <input type="text" id="role" name="role" class="form-control" placeholder="e.g. Software Engineer II" required>
+        <input type="text" id="role" name="role" class="form-control" placeholder="e.g. Software Engineer II" value="<%= job ? job.role : '' %>" required>
       </div>
 
       <div class="form-group">
         <label for="description">Job Description</label>
-        <textarea id="description" name="description" class="form-control" placeholder="Describe the position, responsibilities, requirements, and benefits..." required></textarea>
+        <textarea id="description" name="description" class="form-control" placeholder="Describe the position, responsibilities, requirements, and benefits..." required><%= job ? job.description : '' %></textarea>
         <div class="character-counter"><span id="char-count">0</span>/2000 characters</div>
       </div>
 
       <div class="form-group">
         <label for="type">Employment Type</label>
-        <i class="fas fa-briefcase input-icon"></i>
-        <input type="text" id="type" name="type" class="form-control" placeholder="e.g. Full-time, Part-time, Contract" required>
+        <select id="type" name="type" class="form-control" required>
+          <option value="" disabled <%= !job ? 'selected' : '' %>>Select employment type</option>
+          <% ['Full-time','Part-time','Contract','Internship','Temporary','Apprenticeship'].forEach(type => { %><option <%= job && job.type === type ? 'selected' : '' %>><%= type %></option><% }); %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="seniorityLevel">Seniority level</label>
+        <select id="seniorityLevel" name="seniorityLevel" class="form-control" required>
+          <option value="" disabled <%= !job ? 'selected' : '' %>>Select seniority</option>
+          <% ['Student / Intern','Entry Level','Mid Level','Senior Level','Lead / Manager','Director / VP'].forEach(level => { %><option <%= job && job.seniorityLevel === level ? 'selected' : '' %>><%= level %></option><% }); %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Job location</label>
+        <input type="text" id="location" name="location" class="form-control" placeholder="City or Remote" value="<%= job ? job.location : '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Annual salary range (INR)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label for="salaryMin">Minimum annual salary (₹)</label><input type="number" id="salaryMin" name="salaryMin" class="form-control" min="0" step="10000" placeholder="e.g. 400000" value="<%= job ? job.salaryMin : '' %>" required></div>
+          <div><label for="salaryMax">Maximum annual salary (₹)</label><input type="number" id="salaryMax" name="salaryMax" class="form-control" min="0" step="10000" placeholder="e.g. 800000" value="<%= job ? job.salaryMax : '' %>" required></div>
+        </div>
+        <small>Enter annual amounts in rupees. Example: ₹400,000–₹800,000 is ₹4–8 LPA.</small>
       </div>
 
       <div class="form-group">
         <label for="deadline">Application Deadline</label>
         <i class="fas fa-calendar-day input-icon"></i>
-        <input type="date" id="deadline" name="deadline" class="form-control" required>
+        <input type="date" id="deadline" name="deadline" class="form-control" value="<%= job && job.deadline ? new Date(job.deadline).toISOString().slice(0,10) : '' %>" required>
       </div>
 
       <button type="submit" class="btn btn-primary">
-        <i class="fas fa-paper-plane"></i> Publish Job
+        <i class="fas fa-paper-plane"></i> <%= job ? 'Save changes' : 'Publish Job' %>
       </button>
 
       <a href="/recruiter-dashboard" class="btn btn-secondary">
@@ -248,6 +273,14 @@
     // Set minimum date to today for deadline
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('deadline').min = today;
+
+    const minSalary = document.getElementById('salaryMin');
+    const maxSalary = document.getElementById('salaryMax');
+    function validateSalaryRange() {
+      maxSalary.setCustomValidity(Number(maxSalary.value) < Number(minSalary.value) ? 'Maximum salary must be at least the minimum salary.' : '');
+    }
+    minSalary.addEventListener('input', validateSalaryRange);
+    maxSalary.addEventListener('input', validateSalaryRange);
   </script>
 </body>
 

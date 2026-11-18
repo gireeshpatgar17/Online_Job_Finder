@@ -170,17 +170,24 @@ back-button:hover::after {
 </style>
 <body>
   <div class="application-container">
+    <% if (user) { %><p style="text-align:right"><%= user.name %> · <a href="/logout">Log out</a></p><% } %>
    
     <h1 class="form-title">Job Application Form</h1>
-<!--action="/apply" method="POST" -->
-    <form id="jobApplicationForm" enctype="multipart/form-data">
+    <% if (error) { %><p role="alert" style="color:#b00020"><%= error %></p><% } %>
+    <% if (alreadyApplied) { %>
+      <section class="form-section" role="status"><h2>You have already applied</h2><p>Your application for <strong><%= job.title %></strong> is already on file. You can check its status on your applications page.</p><p><a href="/my-applications">View my applications</a> · <a href="/">Browse jobs</a></p></section>
+    <% } else if (success) { %>
+      <section class="form-section" role="status"><h2>Application submitted successfully</h2><p><%= success %></p><p><a href="/my-applications">Track your application</a> · <a href="/">Browse more jobs</a></p></section>
+    <% } else { %>
+    <form id="jobApplicationForm" action="/apply" method="POST" enctype="multipart/form-data">
+      <% if (job) { %><input type="hidden" name="jobId" value="<%= job._id %>"><% } %>
       <!-- Section 1: Personal Information -->
       <section class="form-section" id="personalInfo">
         <h2><i class="fa-solid fa-id-card"></i> Personal Information</h2>
         <div class="form-grid">
           <input type="text" name="name" id="name" placeholder="* Full Name" required>
           <input type="text" name="dob" id="dob" placeholder="* Date of Birth (dd-mm-yyyy)" required>
-          <input type="number" name="age" id="age" placeholder="* Age" disabled required>
+          <input type="number" name="age" id="age" placeholder="* Age" readonly required>
           <select name="gender" id="gender" required>
             <option value="">* Gender</option>
             <option>Male</option>
@@ -253,7 +260,7 @@ back-button:hover::after {
 
       <!-- Section 8: Submit Button -->
       <section class="form-section">
-        <button class="submit-btn" type="submit" onclick="submitForm()">
+        <button class="submit-btn" type="submit">
           <i class="fa-solid fa-paper-plane"></i> Submit Application
         </button>
       </section>
@@ -267,6 +274,7 @@ back-button:hover::after {
         ← Back to Jobs
       </button>
     </form>
+    <% } %>
   </div>
   <script defer src="/functions.js"></script>
 </body>

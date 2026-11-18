@@ -1,381 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<title>My Page</title>
-	<link rel="stylesheet" href="re-style.css"> <!-- OR use a <style> tag -->
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recruiter Dashboard | Online Job Finder</title>
+  <style>
+    :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#1e293b;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}.top{background:#fff;border-bottom:1px solid #e2e8f0;padding:15px clamp(18px,5vw,64px);display:flex;justify-content:space-between;align-items:center}.brand{font-size:19px;font-weight:750;color:#123354;text-decoration:none}.nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.nav a{color:#1769aa;text-decoration:none}.nav .logout{padding:8px 12px;border:1px solid #ccd8e3;border-radius:8px;color:#34495e}.wrap{max-width:1180px;margin:30px auto;padding:0 22px}.heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.heading h1{margin:0 0 5px;font-size:28px}.muted{color:#64748b}.button{display:inline-block;background:#1769aa;color:#fff!important;padding:11px 15px;border-radius:8px;text-decoration:none}.success{background:#e8f7ef;color:#17613b;border:1px solid #b7e3c9;border-radius:9px;padding:13px 16px;margin:20px 0}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:23px 0}.metric,.panel{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:18px}.metric strong{display:block;font-size:26px;color:#173c5b}.metric span{color:#64748b;font-size:13px}.panel{margin:18px 0}.panel h2{font-size:19px;margin:0 0 15px}.job-row,.message-card,.application-card{padding:15px 0;border-top:1px solid #edf1f5}.job-row:first-of-type,.message-card:first-of-type,.application-card:first-of-type{border-top:0}.job-row{display:flex;justify-content:space-between;align-items:center;gap:15px}.job-row h3,.message-card h3,.application-card h3{font-size:15px;margin:0 0 6px}.tag{display:inline-block;background:#eef5fa;color:#365a78;padding:5px 8px;border-radius:20px;font-size:12px;margin:3px 5px 3px 0}.message-card.unread{border-left:3px solid #1769aa;padding-left:12px}.message-content{color:#53657a;white-space:pre-line}.actions{display:flex;gap:8px;align-items:center;margin-top:10px}.actions button,.actions a{font:inherit;font-size:13px;padding:7px 10px;border:1px solid #cbd8e3;border-radius:7px;background:white;color:#1769aa;text-decoration:none;cursor:pointer}.empty{color:#64748b;padding:15px 0}.file-links{display:flex;gap:12px;flex-wrap:wrap}.file-links a{font-size:13px;color:#1769aa}@media(max-width:650px){.metrics{grid-template-columns:1fr}.heading{align-items:flex-start;flex-direction:column}.job-row{align-items:flex-start;flex-direction:column}}
+  </style>
 </head>
-
 <body>
-	<div class="dashboard">
-		<!-- Sidebar Navigation -->
-		<nav class="sidebar">
-			<div class="logo">
-				<h2>Recruiter Flow</h2>
-			</div>
-			<ul class="nav-links">
-				<li class="active"><a href="#overview"><i class="icon-dashboard"></i>Overview</a></li>
-				<!-- <li><a href="#demographics"><i class="icon-users"></i>Applications</a></li> -->
-				<li><a href="#messages"><i class="icon-chart"></i>Messages</a></li>
-				<li><a href="/post-job"><i class="icon-building"></i> Post Job</a></li>
-			</ul>
-			<div class="user-profile">
-				<img src="https://picsum.photos/40/40" alt="User Profile" class="avatar">
-				<% if (user) { %>
-					<div class="user-info">
-						<h4>
-							<%= user.name %>
-						</h4>
-						<p>
-							<%= user.company || 'Recruiter' %>
-						</p>
-					</div>
-					<% } %>
-			</div>
-			<a href="/logout" class="logout-btn">Logout</a>
+  <header class="top"><a class="brand" href="/recruiter-dashboard">Recruiter Dashboard</a><nav class="nav"><span><%= user.company || user.name %></span><a href="/post-job">Post a job</a><a class="logout" href="/logout">Log out</a></nav></header>
+  <main class="wrap">
+    <div class="heading"><div><h1>Welcome, <%= user.name %></h1><div class="muted">Manage your job posts, applications, and recruiter messages.</div></div><a class="button" href="/post-job">+ Create job post</a></div>
+    <% if (jobPosted) { %><div class="success" role="status">Your job was published successfully and is now listed for applicants.</div><% } %>
+    <% if (jobUpdated) { %><div class="success" role="status">Your job post was updated.</div><% } %>
+    <% if (jobDeleted) { %><div class="success" role="status">The job post and its attached applications were deleted.</div><% } %>
+    <% if (jobStatusChanged) { %><div class="success" role="status">The job’s open/closed status was updated.</div><% } %>
+    <section class="metrics" aria-label="Recruiter overview">
+      <div class="metric"><strong><%= jobs.length %></strong><span>Jobs posted</span></div>
+      <div class="metric"><strong><%= applications.length %></strong><span>Applications received</span></div>
+      <div class="metric"><strong><%= messages.length %></strong><span>Job messages</span></div>
+    </section>
 
-		</nav>
+    <section class="panel" id="my-jobs"><h2>Your job posts</h2>
+      <% if (jobs.length) { jobs.forEach(job => { %>
+        <article class="job-row" data-job-row data-job-id="<%= job._id %>"><div><h3><a href="/jobs/<%= job._id %>"><%= job.title %></a></h3><span class="tag"><%= job.isOpen === false ? 'Closed' : 'Open' %></span><span class="tag"><%= job.type %></span><span class="tag"><%= job.seniorityLevel || 'Seniority not set' %></span><span class="tag"><% if (Number.isFinite(job.salaryMin) && Number.isFinite(job.salaryMax)) { %>₹<%= (job.salaryMin / 100000).toLocaleString('en-IN', { maximumFractionDigits: 1 }) %>–<%= (job.salaryMax / 100000).toLocaleString('en-IN', { maximumFractionDigits: 1 }) %> LPA<% } else { %>Salary missing<% } %></span><div class="muted">Posted <%= job.createdAt.toLocaleDateString() %><% if (job.deadline) { %> · Deadline <%= job.deadline.toLocaleDateString() %><% } %></div></div><div class="actions"><a href="/jobs/<%= job._id %>">View</a><a href="/recruiter/jobs/<%= job._id %>/edit">Edit</a><button type="button" data-toggle-job data-open="<%= job.isOpen !== false %>"><%= job.isOpen === false ? 'Reopen' : 'Close' %></button><button type="button" data-delete-job>Delete</button></div></article>
+      <% }); } else { %><p class="empty">You have not posted any jobs yet. Create your first listing to get started.</p><% } %>
+    </section>
 
-		<!-- Main Content Area -->
-		<main class="content">
-			<header class="top-bar">
-				<div class="top-bar-actions">
-					<button class="notification-btn"><i class="icon-bell"></i></button>
-					<button class="export-btn">Export Data</button>
-				</div>
-			</header>
+    <section class="panel" id="applications"><h2>Applications for your jobs</h2>
+      <% if (applications.length) { applications.forEach(application => { %>
+        <article class="application-card"><h3><%= application.name %> · <%= application.job ? application.job.title : 'Job application' %></h3><div class="muted"><%= application.email %> · <%= application.phone %></div><p><strong>Education:</strong> <%= application.degree %> in <%= application.specialization %> (<%= application.gradYear %>)</p><p><strong>Experience:</strong> <%= application.experienceYears || 0 %> years · <strong>Skills:</strong> <%= application.skills %></p><% if (application.keyResponsibilities) { %><p><strong>Experience details:</strong> <%= application.keyResponsibilities %></p><% } %><label>Application status <select data-application-status data-app-id="<%= application._id %>"><% ['Submitted','Under Review','Interview','Rejected','Accepted'].forEach(status => { %><option value="<%= status %>" <%= (application.status || 'Submitted') === status ? 'selected' : '' %>><%= status %></option><% }); %></select></label><div class="file-links"><% if (application.resume) { %><a href="/applications/<%= application._id %>/files/resume">Download resume</a><% } %><% (application.certificates || []).forEach((file, i) => { %><a href="/applications/<%= application._id %>/files/certificate/<%= i %>">Certificate <%= i + 1 %></a><% }); %></div></article>
+      <% }); } else { %><p class="empty">No applications have arrived for your jobs yet.</p><% } %>
+    </section>
 
-			<!-- Dashboard Content -->
-			<div class="dashboard-content">
-				<section id="overview" class="section-header">
-					<h1>Overview</h1>
-				</section>
-
-				<!-- Messages Section -->
-				<section id="messages" class="messages-section">
-					<h2>Received Messages</h2>
-
-					<% if (messages && messages.length> 0) { %>
-						<div class="message-list">
-							<% messages.forEach(message=> { %>
-								<div class="message-card <%= message.status || 'unread' %>"
-									data-message-id="<%= message._id %>">
-									<div class="message-header">
-										<h3>
-											<% if (message.job && message.job.title) { %>
-												Regarding: <a href="/jobs/<%= message.job._id %>" class="job-link">
-													<%= message.job.title %>
-												</a>
-												<% } else { %>
-													General Inquiry
-													<% } %>
-										</h3>
-										<div class="message-meta">
-											<span class="message-date">
-												<%= message.createdAt.toLocaleDateString() %>
-											</span>
-											<span class="message-status">
-												<%= message.status || 'unread' %>
-											</span>
-										</div>
-										<div class="message-sender">
-											From: <strong>
-												<%= message.sender.name %>
-											</strong>
-											(<%= message.sender.email %>)
-										</div>
-									</div>
-
-									<div class="message-content">
-										<p>
-											<%= message.message %>
-										</p>
-									</div>
-
-									<div class="message-actions">
-										<button class="reply-btn" data-email="<%= message.sender.email %>">
-											↩️ Reply
-										</button>
-
-										<button class="ignore-btn" data-message-id="<%= message._id %>">
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
-												viewBox="0 0 24 24" style="margin-right:6px;">
-												<path
-													d="M18.364 5.636l-1.414-1.414L12 9.172 7.05 4.222 5.636 5.636 10.586 10.586 5.636 15.536l1.414 1.414L12 12.828l4.95 4.95 1.414-1.414-4.95-4.95z" />
-											</svg>
-											Ignore
-										</button>
-
-									</div>
-								</div>
-								<% }); %>
-						</div>
-						<% } else { %>
-							<div class="no-messages">
-								<i class="icon-envelope"></i>
-								<p>No messages received yet</p>
-							</div>
-							<% } %>
-				</section>
-			</div>
-		</main>
-	</div>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-			// Reply button handler
-			document.querySelectorAll('.reply-btn').forEach(btn => {
-				btn.addEventListener('click', (e) => {
-					e.stopPropagation();
-					const email = btn.dataset.email;
-					window.location.href = `mailto:${email}`;
-				});
-			});
-
-			// Mark as read on click
-			document.querySelectorAll('.message-card.unread').forEach(card => {
-				card.addEventListener('click', function () {
-					const messageId = this.dataset.messageId;
-					if (messageId) {
-						fetch(`/messages/${messageId}/read`, { method: 'PUT' })
-							.then(() => this.classList.replace('unread', 'read'))
-							.catch(err => console.error('Error marking as read:', err));
-					}
-				});
-			});
-		});
-	</script>
-
-
-
-	<script>
-		document.addEventListener("DOMContentLoaded", () => {
-			const ignoreButtons = document.querySelectorAll(".ignore-btn");
-
-			ignoreButtons.forEach(button => {
-				button.addEventListener("click", async () => {
-					const messageId = button.getAttribute("data-message-id");
-
-					try {
-						const response = await fetch(`/messages/${messageId}`, {
-							method: "DELETE",
-						});
-
-						if (response.ok) {
-							// Remove the message card from the DOM
-							const messageCard = button.closest(".message-card");
-							messageCard.remove();
-							alert("Message ignored successfully.");
-						} else {
-							alert("Failed to ignore the message. Please try again.");
-						}
-					} catch (error) {
-						console.error("Error ignoring message:", error);
-						alert("Error ignoring the message. Please try again later.");
-					}
-				});
-			});
-		});
-	</script>
-
-
-
-	<style>
-		.message-card {
-			cursor: pointer;
-			transition: background-color 0.2s, transform 0.2s;
-			padding: 10px 15px;
-			border-radius: 6px;
-			background: #ffffff;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-			border-left: 4px solid #4a6bff;
-			overflow: hidden;
-			position: relative;
-			animation: fadeIn 0.3s ease-out forwards;
-		}
-
-		.message-card.unread {
-			background-color: #f8f9fa;
-		}
-
-		.message-card:hover {
-			background-color: #f1f1f1;
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		}
-
-		.message-actions {
-			display: flex;
-			gap: 8px;
-			margin-top: 10px;
-		}
-
-		.reply-btn {
-			background: linear-gradient(135deg, #4a6bff, #657eff);
-			color: #ffffff;
-			padding: 6px 18px;
-			border: none;
-			border-radius: 20px;
-			cursor: pointer;
-			font-size: 0.85rem;
-			font-weight: 500;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.reply-btn:hover {
-			background: linear-gradient(135deg, #3b5dcc, #5c6fee);
-			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-			transform: translateY(-2px);
-		}
-
-		.messages-section {
-			margin-top: 15px;
-			padding: 15px;
-			background: #f8f9fa;
-			border-radius: 8px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-		}
-
-		.message-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 5px;
-		}
-
-		.message-header h3 {
-			color: #2c3e50;
-			font-size: 0.9rem;
-			margin: 0;
-			font-weight: 600;
-		}
-
-		.message-date {
-			color: #7f8c8d;
-			font-size: 0.75rem;
-			background: #f1f5fe;
-			padding: 3px 8px;
-			border-radius: 15px;
-		}
-
-		.message-sender {
-			color: #4a6bff;
-			margin-bottom: 5px;
-			font-weight: 500;
-			font-size: 0.85rem;
-		}
-
-		.message-content {
-			white-space: pre-wrap;
-			color: #34495e;
-			line-height: 1.4;
-			padding: 8px 12px;
-			background: #f9fafc;
-			border-radius: 5px;
-			font-size: 0.85rem;
-		}
-
-		.no-messages {
-			text-align: center;
-			padding: 20px;
-			color: #7f8c8d;
-			font-size: 0.9rem;
-			background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="%23dfe6e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>') no-repeat center 15px;
-			padding-top: 50px;
-			opacity: 0.8;
-		}
-
-		@media (max-width: 768px) {
-			.message-header {
-				flex-direction: column;
-				align-items: flex-start;
-				gap: 5px;
-			}
-
-			.message-date {
-				align-self: flex-start;
-			}
-
-			.message-card {
-				padding: 12px 10px;
-			}
-		}
-
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: translateY(5px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		.ignore-btn {
-			background: linear-gradient(135deg, #ff5c5c, #ff7979);
-			color: #ffffff;
-			padding: 6px 18px;
-			border: none;
-			border-radius: 20px;
-			cursor: pointer;
-			font-size: 0.85rem;
-			font-weight: 500;
-			box-shadow: 0 4px 12px rgba(255, 92, 92, 0.4);
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.ignore-btn:hover {
-			background: linear-gradient(135deg, #cc4949, #d96666);
-			box-shadow: 0 6px 18px rgba(204, 73, 73, 0.6);
-			transform: translateY(-2px);
-		}
-
-		.user-profile {
-			text-align: center;
-			padding-bottom: 20px;
-			/* smaller space for logout button */
-			position: relative;
-		}
-
-		.logout-btn {
-			background: linear-gradient(135deg, #4a6bff, #657eff);
-			color: #ffffff;
-			padding: 6px 18px;
-			border: none;
-			border-radius: 20px;
-			cursor: pointer;
-			font-size: 0.85rem;
-			font-weight: 500;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-			transition: all 0.3s ease;
-			display: inline-block;
-			margin-top: 8px;
-			/* reduced from 10px */
-			width: 80%;
-			/* button width relative to sidebar */
-			max-width: 150px;
-			/* max size */
-		}
-
-
-		.logout-btn:hover {
-			background: linear-gradient(135deg, #3b5dcc, #5c6fee);
-			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-			transform: translateY(-2px);
-		}
-	</style>
-
-
+    <section class="panel" id="messages"><h2>Messages from applicants</h2>
+      <% if (messages.length) { messages.forEach(message => { %>
+        <article class="message-card <%= message.status === 'unread' ? 'unread' : '' %>" data-message-id="<%= message._id %>">
+          <h3><%= message.job ? message.job.title : 'Job inquiry' %></h3><div class="muted">From <%= message.sender.name %> · <%= message.sender.email %> · <%= message.createdAt.toLocaleDateString() %></div><p class="message-content"><%= message.message %></p>
+          <div class="actions"><a href="mailto:<%= message.sender.email %>">Reply by email</a><% if (message.status === 'unread') { %><button type="button" data-read-message>Mark read</button><% } %><button type="button" data-delete-message>Delete</button></div>
+        </article>
+      <% }); } else { %><p class="empty">No messages yet.</p><% } %>
+    </section>
+  </main>
+  <script>
+    document.querySelectorAll('[data-toggle-job]').forEach(button => button.addEventListener('click', async () => {
+      const row = button.closest('[data-job-row]');
+      const response = await fetch(`/recruiter/jobs/${row.dataset.jobId}/open`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ isOpen: button.dataset.open !== 'true' }) });
+      if (response.ok) location.href = '/recruiter-dashboard?statusChanged=1';
+      else { const result = await response.json(); alert(result.error || 'Could not update this job.'); }
+    }));
+    document.querySelectorAll('[data-delete-job]').forEach(button => button.addEventListener('click', async () => {
+      if (!confirm('Delete this job and permanently remove its applications, uploaded documents, and messages?')) return;
+      const row = button.closest('[data-job-row]');
+      const response = await fetch(`/recruiter/jobs/${row.dataset.jobId}`, { method: 'DELETE' });
+      if (response.ok) location.href = '/recruiter-dashboard?deleted=1';
+      else alert('Could not delete this job. Please refresh and try again.');
+    }));
+    document.querySelectorAll('[data-application-status]').forEach(select => select.addEventListener('change', async () => {
+      const response = await fetch(`/applications/${select.dataset.appId}/status`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ status: select.value }) });
+      if (!response.ok) { alert('Could not update application status.'); location.reload(); }
+    }));
+    document.querySelectorAll('[data-read-message]').forEach(button => button.addEventListener('click', async () => {
+      const card = button.closest('[data-message-id]');
+      const response = await fetch(`/messages/${card.dataset.messageId}/read`, { method: 'PUT' });
+      if (response.ok) { card.classList.remove('unread'); button.remove(); }
+    }));
+    document.querySelectorAll('[data-delete-message]').forEach(button => button.addEventListener('click', async () => {
+      const card = button.closest('[data-message-id]');
+      const response = await fetch(`/messages/${card.dataset.messageId}`, { method: 'DELETE' });
+      if (response.ok) card.remove();
+    }));
+  </script>
 </body>
-
 </html>

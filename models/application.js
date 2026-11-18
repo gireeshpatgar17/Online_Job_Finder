@@ -1,6 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({
+  job: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
+  applicant: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  status: { type: String, enum: ['Submitted', 'Under Review', 'Interview', 'Rejected', 'Accepted'], default: 'Submitted' },
   name: String,
   dob: String,
   age: Number,
@@ -19,16 +22,21 @@ const applicationSchema = new mongoose.Schema({
   jobDuration: String,
   keyResponsibilities: String,
   skills: String,
-  certificates: [String], // Multiple files
+  certificates: [String],
   github: String,
   personalWebsite: String,
-  resume: String, // This will store the file name or path
+  resume: String
+}, { timestamps: { createdAt: 'submittedAt', updatedAt: false } });
 
-
-  submittedAt: {
-    type: Date,
-    default: Date.now
+applicationSchema.index(
+  { applicant: 1, job: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      applicant: { $type: 'objectId' },
+      job: { $type: 'objectId' }
+    }
   }
-});
+);
 
-module.exports = mongoose.model("Application", applicationSchema);
+module.exports = mongoose.model('Application', applicationSchema);
